@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aether Order - Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f9fa; }
+        .header { background: #000; color: white; padding: 20px 0; text-align: center; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
+        .stat-number { font-size: 2.5em; font-weight: bold; color: #000; }
+        .stat-label { color: #666; margin-top: 5px; }
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .btn { padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #000; color: white; }
+        .btn-primary:hover { background: #333; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .auto-refresh { display: flex; align-items: center; gap: 10px; }
+        .switch { position: relative; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #000; }
+        input:checked + .slider:before { transform: translateX(26px); }
+        .email-list { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .email-header { background: #f8f9fa; padding: 15px; border-bottom: 1px solid #dee2e6; font-weight: bold; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; }
+        .email-item { padding: 15px; border-bottom: 1px solid #f0f0f0; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; align-items: center; }
+        .email-item:last-child { border-bottom: none; }
+        .email-item:hover { background: #f8f9fa; }
+        .email { font-weight: 500; word-break: break-all; }
+        .date { color: #666; font-size: 0.9em; }
+        .ip { color: #999; font-size: 0.85em; font-family: monospace; }
+        .status { position: fixed; top: 20px; right: 20px; padding: 10px 15px; border-radius: 5px; color: white; z-index: 1000; }
+        .status.success { background: #28a745; }
+        .status.error { background: #dc3545; }
+        .new-subscriber { animation: highlight 2s ease-in-out; }
+        @keyframes highlight { 0% { background: #fff3cd; } 100% { background: white; } }
+        @media (max-width: 768px) {
+            .email-header, .email-item { grid-template-columns: 1fr; gap: 5px; }
+            .controls { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>THE AETHER ORDER - ADMIN DASHBOARD</h1>
+    </div>
+    
+    <div class="container">
+        <div class="dashboard" id="dashboard">
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">-</div>
+                <div class="stat-label">Total Subscribers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="todayCount">-</div>
+                <div class="stat-label">Hoje</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="weekCount">-</div>
+                <div class="stat-label">Esta Semana</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="monthCount">-</div>
+                <div class="stat-label">Este Mês</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-primary" onclick="loadEmails()">🔄 Atualizar</button>
+            <a href="api/export-csv.php" class="btn btn-success">📊 Exportar CSV</a>
+            <div class="auto-refresh">
+                <span>Auto-refresh:</span>
+                <label class="switch">
+                    <input type="checkbox" id="autoRefresh" onchange="toggleAutoRefresh()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="email-list">
+            <div class="email-header">
+                <div>Email</div>
+                <div>Data/Hora</div>
+                <div>IP</div>
+            </div>
+            <div id="emailList">Carregando...</div>
+        </div>
+    </div>
+
+    <script>
+        let autoRefreshInterval;
+        let lastCount = 0;
+        
+        function showStatus(message, type = 'success') {
+            const status = document.createElement('div');
+            status.className = `status ${type}`;
+            status.textContent = message;
+            document.body.appendChild(status);
+            setTimeout(() => status.remove(), 3000);
+        }
+        
+        function loadEmails() {
+            fetch('api/get-subscribers.php')
+                .then(response => response.json())
+                .then(data => {
+                    // Atualizar estatísticas
+                    document.getElementById('totalCount').textContent = data.total;
+                    document.getElementById('todayCount').textContent = data.today;
+                    document.getElementById('weekCount').textContent = data.thisWeek;
+                    document.getElementById('monthCount').textContent = data.thisMonth;
+                    
+                    // Verificar novos subscribers
+                    if (lastCount > 0 && data.total > lastCount) {
+                        showStatus(`${data.total - lastCount} novo(s) subscriber(s)!`);
+                    }
+                    lastCount = data.total;
+                    
+                    // Atualizar lista
+                    let html = '';
+                    if (data.subscribers.length === 0) {
+                        html = '<div class="email-item"><div colspan="3">Nenhum subscriber ainda</div></div>';
+                    } else {
+                        data.subscribers.forEach((sub, index) => {
+                            const isNew = index === 0 && data.total > lastCount;
+                            html += `<div class="email-item ${isNew ? 'new-subscriber' : ''}">
+                                <div class="email">${sub.email}</div>
+                                <div class="date">${sub.date}</div>
+                                <div class="ip">${sub.ip}</div>
+                            </div>`;
+                        });
+                    }
+                    document.getElementById('emailList').innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById('emailList').innerHTML = '<div class="email-item">Erro ao carregar emails</div>';
+                    showStatus('Erro ao carregar dados', 'error');
+                });
+        }
+        
+        function toggleAutoRefresh() {
+            const checkbox = document.getElementById('autoRefresh');
+            if (checkbox.checked) {
+                autoRefreshInterval = setInterval(loadEmails, 10000); // 10 segundos
+                showStatus('Auto-refresh ativado (10s)');
+            } else {
+                clearInterval(autoRefreshInterval);
+                showStatus('Auto-refresh desativado');
+            }
+        }
+        
+        // Carregar emails ao iniciar
+        loadEmails();
+        
+        // Ativar auto-refresh por padrão
+        document.getElementById('autoRefresh').checked = true;
+        toggleAutoRefresh();
+    </script>
+</body>
+</html>

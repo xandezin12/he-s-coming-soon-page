@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Simples</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .stats { background: #f0f0f0; padding: 15px; margin: 20px 0; }
+        .email-list { border: 1px solid #ddd; }
+        .email-item { padding: 10px; border-bottom: 1px solid #eee; }
+        button { padding: 10px 20px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin - Subscribers</h1>
+        <button onclick="loadEmails()">Atualizar</button>
+        <div id="stats">Carregando...</div>
+        <div id="emailList">Carregando...</div>
+    </div>
+
+    <script>
+        function loadEmails() {
+            fetch('api/get-subscribers.php')
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.text();
+                })
+                .then(text => {
+                    console.log('Response text:', text);
+                    try {
+                        const data = JSON.parse(text);
+                        document.getElementById('stats').innerHTML = 
+                            `Total: ${data.total} | Hoje: ${data.today} | Semana: ${data.thisWeek}`;
+                        
+                        let html = '';
+                        if (data.subscribers.length === 0) {
+                            html = '<div class="email-item">Nenhum subscriber</div>';
+                        } else {
+                            data.subscribers.forEach(sub => {
+                                html += `<div class="email-item">${sub.email} - ${sub.date}</div>`;
+                            });
+                        }
+                        document.getElementById('emailList').innerHTML = html;
+                    } catch (e) {
+                        console.error('JSON parse error:', e);
+                        document.getElementById('emailList').innerHTML = 'Erro: ' + text;
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    document.getElementById('emailList').innerHTML = 'Erro de conexão';
+                });
+        }
+        
+        loadEmails();
+    </script>
+</body>
+</html>

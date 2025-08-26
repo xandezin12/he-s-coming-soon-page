@@ -1,0 +1,487 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Crimson Text', serif;
+    background: #000;
+    color: #fff;
+    line-height: 1.6;
+    background-image: 
+        radial-gradient(circle at 20% 50%, transparent 20%, rgba(255,255,255,0.02) 21%, rgba(255,255,255,0.02) 34%, transparent 35%, transparent),
+        linear-gradient(45deg, rgba(255,255,255,0.01) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255,255,255,0.01) 25%, transparent 25%);
+    background-size: 50px 50px, 20px 20px, 20px 20px;
+    animation: flicker 3s infinite;
+}
+
+@keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.98; }
+}
+
+/* Newspaper Container */
+.newspaper {
+    max-width: 900px;
+    margin: 20px auto;
+    background: #111;
+    box-shadow: 0 0 50px rgba(255,255,255,0.1), inset 0 0 50px rgba(0,0,0,0.8);
+    border: 5px solid #fff;
+    position: relative;
+    filter: contrast(1.2);
+}
+
+.newspaper::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    background: #fff;
+    z-index: -1;
+}
+
+.newspaper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.03) 2px,
+        rgba(255,255,255,0.03) 4px
+    );
+    pointer-events: none;
+}
+
+/* Header */
+.newspaper-header {
+    text-align: center;
+    padding: 40px 40px 30px;
+    border-bottom: 6px double #fff;
+    background: #000;
+    position: relative;
+}
+
+.header-line {
+    height: 4px;
+    background: #fff;
+    margin: 20px 0;
+    box-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.logo-placeholder {
+    width: 140px;
+    height: 140px;
+    border: 3px solid #fff;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(255,255,255,0.3);
+    animation: pulse 2s infinite;
+}
+
+.logo-symbol {
+    font-size: 4rem;
+    color: #fff;
+    text-shadow: 0 0 15px rgba(255,255,255,0.8);
+}
+
+/* Espaço preparado para nova logo */
+.main-logo {
+    width: 140px;
+    height: 140px;
+    filter: none;
+    border: 3px solid #fff;
+    padding: 10px;
+    background: #000;
+    box-shadow: 0 0 20px rgba(255,255,255,0.3);
+    animation: pulse 2s infinite;
+    display: none; /* Será ativado quando você adicionar a nova logo */
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+.newspaper-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 4px;
+    margin: 20px 0;
+    text-shadow: 0 0 20px rgba(255,255,255,0.8);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 20px rgba(255,255,255,0.8); }
+    to { text-shadow: 0 0 30px rgba(255,255,255,1), 0 0 40px rgba(255,255,255,0.8); }
+}
+
+.newspaper-subtitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    margin: 15px 0;
+    text-transform: uppercase;
+    color: #ccc;
+}
+
+.date-price {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 20px;
+    text-transform: uppercase;
+    color: #ccc;
+}
+
+/* Main Content */
+.newspaper-content {
+    padding: 40px 40px;
+    background: #111;
+}
+
+.main-story {
+    margin-bottom: 40px;
+}
+
+.headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.2rem;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 15px;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 15px rgba(255,255,255,0.6);
+}
+
+.subheadline {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    font-style: italic;
+    text-align: center;
+    margin-bottom: 25px;
+    color: #bbb;
+}
+
+.story-meta {
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 30px;
+    font-style: italic;
+    color: #888;
+}
+
+/* Countdown Box */
+.countdown-box {
+    border: 3px solid #fff;
+    padding: 25px;
+    margin: 30px 0;
+    text-align: center;
+    background: #000;
+    box-shadow: inset 0 0 20px rgba(255,255,255,0.1);
+}
+
+.countdown-box h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+.countdown {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.countdown div {
+    border: 3px solid #fff;
+    padding: 20px 15px;
+    min-width: 90px;
+    background: #111;
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(255,255,255,0.2);
+    animation: countdownPulse 1s infinite;
+}
+
+@keyframes countdownPulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(255,255,255,0.2); }
+    50% { box-shadow: 0 0 25px rgba(255,255,255,0.4); }
+}
+
+.countdown div span {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 400;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Crimson Text', serif;
+    color: #ccc;
+}
+
+/* Story Text */
+.story-text {
+    column-count: 2;
+    column-gap: 40px;
+    text-align: justify;
+    margin-top: 25px;
+}
+
+.story-text .lead {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    column-span: all;
+    text-align: center;
+    font-style: italic;
+    color: #ddd;
+}
+
+.story-text p {
+    margin-bottom: 18px;
+    text-indent: 25px;
+    color: #ccc;
+}
+
+/* Subscription Section */
+.subscription-section {
+    border-top: 3px solid #fff;
+    border-bottom: 3px solid #fff;
+    padding: 30px 40px;
+    background: #000;
+    text-align: center;
+}
+
+.subscription-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+.subscription-box p {
+    margin-bottom: 25px;
+    font-style: italic;
+    color: #bbb;
+    font-size: 1.1rem;
+}
+
+.subscription-form {
+    display: flex;
+    max-width: 500px;
+    margin: 0 auto;
+    gap: 15px;
+}
+
+.subscription-form input {
+    flex: 1;
+    padding: 15px 20px;
+    border: 2px solid #fff;
+    background: #111;
+    color: #fff;
+    font-family: 'Crimson Text', serif;
+    font-size: 1rem;
+}
+
+.subscription-form input::placeholder {
+    color: #888;
+}
+
+.subscription-form button {
+    padding: 15px 25px;
+    background: #fff;
+    color: #000;
+    border: 2px solid #fff;
+    font-family: 'Crimson Text', serif;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.subscription-form button:hover {
+    background: #000;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+/* News Columns */
+.news-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    padding: 40px 40px;
+    border-top: 2px solid #fff;
+    background: #111;
+}
+
+.column h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #fff;
+    padding-bottom: 8px;
+    color: #fff;
+}
+
+.column p {
+    font-size: 0.95rem;
+    text-align: justify;
+    margin-bottom: 12px;
+    text-indent: 20px;
+    color: #ccc;
+}
+
+/* Footer */
+.newspaper-footer {
+    text-align: center;
+    padding: 25px 40px;
+    border-top: 6px double #fff;
+    background: #000;
+}
+
+.footer-line {
+    height: 2px;
+    background: #fff;
+    margin: 15px 0;
+}
+
+.newspaper-footer p {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: #888;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .newspaper {
+        margin: 10px;
+        border-width: 3px;
+    }
+    
+    .logo-section {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .logo-placeholder {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .logo-symbol {
+        font-size: 3rem;
+    }
+    
+    .main-logo {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .newspaper-title {
+        font-size: 3rem;
+        letter-spacing: 3px;
+    }
+    
+    .headline {
+        font-size: 2.5rem;
+    }
+    
+    .story-text {
+        column-count: 1;
+    }
+    
+    .countdown {
+        gap: 15px;
+    }
+    
+    .countdown div {
+        min-width: 80px;
+        padding: 15px 10px;
+        font-size: 2rem;
+    }
+    
+    .subscription-form {
+        flex-direction: column;
+    }
+    
+    .news-columns {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-placeholder {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .logo-symbol {
+        font-size: 2.5rem;
+    }
+    
+    .main-logo {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .newspaper-title {
+        font-size: 2.2rem;
+        letter-spacing: 2px;
+    }
+    
+    .headline {
+        font-size: 1.8rem;
+    }
+    
+    .countdown div {
+        min-width: 70px;
+        font-size: 1.5rem;
+    }
+}
